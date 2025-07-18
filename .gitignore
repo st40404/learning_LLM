@@ -1,2 +1,4 @@
 /dataset
 *.tsv
+/scripts/_unsloth*
+/scripts/unsloth*
