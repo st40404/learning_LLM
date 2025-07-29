@@ -2,3 +2,4 @@
 *.tsv
 /scripts/_unsloth*
 /scripts/unsloth*
+/scripts/TinyLlama*
