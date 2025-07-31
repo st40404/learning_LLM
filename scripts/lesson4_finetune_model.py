@@ -92,7 +92,7 @@ trainer = UnslothTrainer(
         weight_decay=0.00,
         lr_scheduler_type="cosine",
         seed=3407,
-        output_dir="./TinyLlama-1.1B-Chat-V0.4-pretrain",
+        output_dir="./TinyLlama-1.1B-Chat-V0.4-finetune",
     ),
 )
 # 參數介紹
@@ -143,3 +143,5 @@ output_dir : 模型儲存的輸出資料夾。完成訓練後, 會將最佳模�
 
 # 開始訓練
 trainer_stats = trainer.train()
+model.save_pretrained("./TinyLlama-1.1B-Chat-V0.4-finetune")
+tokenizer.save_pretrained("./TinyLlama-1.1B-Chat-V0.4-finetune")

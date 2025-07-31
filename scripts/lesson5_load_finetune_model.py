@@ -12,9 +12,9 @@ from unsloth import FastLanguageModel
 
 # 下載 & 載入模型 (用 Unsloth 最佳化版本)
 model, tokenizer = FastLanguageModel.from_pretrained(
-    # model_name = "TinyLlama/TinyLlama_v1.1_Chinese",
-    # model_name = "TinyLlama/TinyLlama-1.1B-Chat-v1.0",
-    model_name = "TinyLlama/TinyLlama-1.1B-Chat-V0.4",
+    # model_name = "TinyLlama/TinyLlama-1.1B-Chat-V0.4",
+    # model_name = "./TinyLlama-1.1B-Chat-V0.4-pretrain",
+    model_name = "./TinyLlama-1.1B-Chat-V0.4-finetune",
     max_seq_length = 2048,
     dtype = None,
     load_in_4bit = True,
@@ -27,6 +27,8 @@ from transformers import TextStreamer
 # question = "The highest mountain of the world?"
 # question = "The color of banana?"
 question = "Explain what is modbus?"
+
+
 
 prompt = "<|system|> You are a friendly chatbot who always responds in the style of a pirate.</s> \
           <|user|> {} </s> <|assistant|>".format(question)
