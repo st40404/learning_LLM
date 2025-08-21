@@ -13,8 +13,9 @@ from unsloth import FastLanguageModel
 # 下載 & 載入模型 (用 Unsloth 最佳化版本)
 model, tokenizer = FastLanguageModel.from_pretrained(
     # model_name = "TinyLlama/TinyLlama-1.1B-Chat-V0.4",
-    # model_name = "./TinyLlama-1.1B-Chat-V0.4-pretrain",
-    model_name = "./TinyLlama-1.1B-Chat-V0.4-finetune",
+    # model_name = "./TinyLlama-1.1B-Chat-V0.4-finetune",
+    # model_name = "./TinyLlama-finetune-hermes",
+    model_name = "./TinyLlama-finetune-chatgpt-prompts",
     max_seq_length = 2048,
     dtype = None,
     load_in_4bit = True,
@@ -24,9 +25,10 @@ model, tokenizer = FastLanguageModel.from_pretrained(
 from transformers import TextStreamer
 
 # question = "Who are you?"
-# question = "The highest mountain of the world?"
+question = "The highest mountain of the world?"
 # question = "The color of banana?"
-question = "Explain what is modbus?"
+# question = "Explain what is modbus?"
+# question = "As a senior engnior, Explain what is modbus?"
 
 
 
@@ -41,9 +43,10 @@ inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
 # 設定 streamer 可以即時輸出文字
 streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
 
+# 保守的參數
 outputs = model.generate(
     **inputs,
-    max_new_tokens=80,
+    max_new_tokens=200,
     do_sample=True,
     temperature=0.4,
     top_k=40,
@@ -52,6 +55,20 @@ outputs = model.generate(
     pad_token_id=tokenizer.pad_token_id,
     streamer=streamer
 )
+
+# 隨機性較高的參數
+# outputs = model.generate(
+#     **inputs,
+#     max_new_tokens=80,
+#     do_sample=True,
+#     temperature=0.6,
+#     top_k=60,
+#     top_p=0.8,
+#     eos_token_id=tokenizer.eos_token_id,
+#     pad_token_id=tokenizer.pad_token_id,
+#     streamer=streamer
+# )
+
 # 參數介紹
 """
 max_new_tokens : 最多產生幾個新 token (不包含 prompt)

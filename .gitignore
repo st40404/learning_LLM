@@ -3,3 +3,5 @@
 /scripts/_unsloth*
 /scripts/unsloth*
 /scripts/TinyLlama*
+/log*
+/scripts/logs*
