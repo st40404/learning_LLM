@@ -10,12 +10,19 @@
 
 from unsloth import FastLanguageModel
 
+# 載入你已經微調好的模型，注意這裡的路徑要正確
+# 如果你已經上傳到 Hugging Face Hub，可以從那裡下載
+# 例如: model_name = "st40404/TinyLlama-finetune-hermes-end-conversation-gemini"
+# model_name = "TinyLlama/TinyLlama-1.1B-Chat-V0.4"
+# model_name = "./TinyLlama-1.1B-Chat-V0.4-finetune"
+# model_name = "./TinyLlama-finetune-hermes"
+# model_name = "./TinyLlama-continue-finetune-chatgpt-prompts"
+model_name = "./TinyLlama-finetune-hermes-end-conversation"
+
 # 下載 & 載入模型 (用 Unsloth 最佳化版本)
+print(f"載入模型：{model_name}...")
 model, tokenizer = FastLanguageModel.from_pretrained(
-    # model_name = "TinyLlama/TinyLlama-1.1B-Chat-V0.4",
-    # model_name = "./TinyLlama-1.1B-Chat-V0.4-finetune",
-    # model_name = "./TinyLlama-finetune-hermes",
-    model_name = "./TinyLlama-finetune-chatgpt-prompts",
+    model_name = model_name,
     max_seq_length = 2048,
     dtype = None,
     load_in_4bit = True,
@@ -44,12 +51,25 @@ inputs = tokenizer(prompt, return_tensors="pt").to("cuda")
 streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
 
 # 保守的參數
+# outputs = model.generate(
+#     **inputs,
+#     max_new_tokens=200,
+#     do_sample=True,
+#     temperature=0.4,
+#     top_k=40,
+#     top_p=0.8,
+#     eos_token_id=tokenizer.eos_token_id,
+#     pad_token_id=tokenizer.pad_token_id,
+#     streamer=streamer
+# )
+
+# 測試自動結束話題的參數
 outputs = model.generate(
     **inputs,
-    max_new_tokens=200,
+    max_new_tokens=500,
     do_sample=True,
-    temperature=0.4,
-    top_k=40,
+    temperature=0.3,
+    top_k=30,
     top_p=0.8,
     eos_token_id=tokenizer.eos_token_id,
     pad_token_id=tokenizer.pad_token_id,
