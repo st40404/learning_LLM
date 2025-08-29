@@ -16,8 +16,8 @@ from unsloth import FastLanguageModel
 # model_name = "TinyLlama/TinyLlama-1.1B-Chat-V0.4"
 # model_name = "./TinyLlama-1.1B-Chat-V0.4-finetune"
 # model_name = "./TinyLlama-finetune-hermes"
-# model_name = "./TinyLlama-continue-finetune-chatgpt-prompts"
-model_name = "./TinyLlama-finetune-hermes-end-conversation"
+model_name = "./TinyLlama-continue-finetune-chatgpt-prompts"
+# model_name = "./TinyLlama-finetune-hermes-end-conversation"
 
 # 下載 & 載入模型 (用 Unsloth 最佳化版本)
 print(f"載入模型：{model_name}...")
@@ -32,15 +32,19 @@ model, tokenizer = FastLanguageModel.from_pretrained(
 from transformers import TextStreamer
 
 # question = "Who are you?"
-question = "The highest mountain of the world?"
+question = "What is the highest mountain of the world?"
 # question = "The color of banana?"
+# question = "Whar is the color of banana?"
 # question = "Explain what is modbus?"
 # question = "As a senior engnior, Explain what is modbus?"
 
+# 這是舊的 prompt 格式，prompt 格式要跟著你 finetune 的格式去問
+# prompt = "<|system|> You are a friendly chatbot who always responds in the style of a pirate.</s> \
+#           <|user|> {} </s> <|assistant|>".format(question)
 
-
-prompt = "<|system|> You are a friendly chatbot who always responds in the style of a pirate.</s> \
-          <|user|> {} </s> <|assistant|>".format(question)
+# 這是學習自動結束話題所使用的 prompt
+prompt = "<|im_start|>You are a friendly chatbot who always responds in the style of a pirate.<|im_end|>\n \
+          <|im_start|>user {} <|im_end|>\n".format(question)
 
 
 print("------------------------------------")
@@ -55,8 +59,8 @@ streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
 #     **inputs,
 #     max_new_tokens=200,
 #     do_sample=True,
-#     temperature=0.4,
-#     top_k=40,
+#     temperature=0.2,
+#     top_k=20,
 #     top_p=0.8,
 #     eos_token_id=tokenizer.eos_token_id,
 #     pad_token_id=tokenizer.pad_token_id,
@@ -64,12 +68,23 @@ streamer = TextStreamer(tokenizer, skip_prompt=True, skip_special_tokens=True)
 # )
 
 # 測試自動結束話題的參數
+# outputs = model.generate(
+#     **inputs,
+#     max_new_tokens=500,
+#     do_sample=True,
+#     temperature=0.3,
+#     top_k=30,
+#     top_p=0.8,
+#     eos_token_id=tokenizer.eos_token_id,
+#     pad_token_id=tokenizer.pad_token_id,
+#     streamer=streamer
+# )
 outputs = model.generate(
     **inputs,
     max_new_tokens=500,
     do_sample=True,
-    temperature=0.3,
-    top_k=30,
+    temperature=0.5,
+    top_k=40,
     top_p=0.8,
     eos_token_id=tokenizer.eos_token_id,
     pad_token_id=tokenizer.pad_token_id,
